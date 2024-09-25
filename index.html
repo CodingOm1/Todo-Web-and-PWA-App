@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Todo App</title>
+  </head>
+  <body>
+    <div class="main">
+      <div class="todo">
+        <div class="todo_box">
+          <div class="todo_top">
+            <h1>Todo</h1>
+            <div class="todo_top_right">
+              <input id="todo-input" type="text" placeholder="Add a task" />
+              <button id="todo-add">Add</button>
+            </div>
+          </div>
+          <div id="error-message" style="color: red; display: none;">
+            Please enter a task.
+          </div>
+          <div class="todos-list" id="todos-list"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal for Editing Todo -->
+<div id="edit-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>Edit Todo</h2>
+    <input id="edit-input" type="text" placeholder="Edit your task" />
+    <button id="save-edit">Save</button>
+  </div>
+</div>
+<!-- Add this after the edit modal in your HTML -->
+<div id="delete-modal" class="modal">
+  <div class="modal-content delete-modal-content">
+    <h2>Confirm Deletion</h2>
+    <p>Are you sure you want to delete this task?</p>
+    <div class="delete-modal-buttons">
+      <button id="cancel-delete" class="btn cancel-btn">Cancel</button>
+      <button id="confirm-delete" class="btn delete-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Error Message Box -->
+<div id="animated-error-message" class="animated-error-message"></div>
+
+
+    <script src="script.js"></script>
+  </body>
+</html>

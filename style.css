@@ -1,0 +1,963 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Poppins;
+  width: 100%;
+  height: 100%;
+  background-color: #e2e8f0;
+  /* background-color: #fff; */
+  color: #000;
+}
+/* Make modern scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background-color: #e2e8f0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #7455ff;
+}
+.todo {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo_box {
+  width: 100%;
+  max-width: 500px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 0px 20px;
+}
+
+.todo_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 99;
+}
+
+.todo_top h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.todo_top_right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo_top_right input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.3s ease-in-out;
+}
+.todo_top_right input::placeholder {
+  color: #94a3b8;
+}
+.todo_top_right input:focus {
+  border: 1px solid #000;
+}
+
+.todo_top_right button {
+  padding: 10px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+.todo_top_right button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.todos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  overflow-y: auto;
+}
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+
+.todo-item:hover {
+  background-color: #f1f1f1;
+}
+
+.todo-item_left {
+  display: flex;
+  align-items: center;
+}
+
+.todo-item_left input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+}
+
+.todo-item_left input[type="checkbox"]:checked {
+  background-color: #7455ff;
+  border-color: #7455ff;
+}
+
+.todo-item_left input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.todo-item_left label p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  /* Make when text overflow, will be hidden and show by ... */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  width: 240px;
+  transition: all .5 cubic-bezier(0.19, 1, 0.22, 1);
+  transform-origin: left center;
+}
+.todo-item.checked .todo-item_left p {
+  text-decoration: line-through;
+  color: #888; /* Optional: To make the completed todo text gray */
+}
+
+
+.todo-item_right {
+  display: flex;
+  gap: 10px;
+}
+
+.todo-item_right button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.todo-item_right button:hover {
+  background-color: #0056b3;
+}
+
+.todo-item_right button:active {
+  background-color: #004494;
+  transform: scale(1);
+}
+/* Modal Styles */
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: 15% auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #555;
+}
+
+.modal-content h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+#edit-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+#edit-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+#save-edit {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+#save-edit:hover {
+  background-color: #3a7bc8;
+}
+
+#save-edit:active {
+  transform: scale(0.98);
+}
+/* Error Message Styles */
+.animated-error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffcc00;
+  color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 999;
+  display: none; /* Hidden by default */
+  animation: slideIn 0.5s forwards; /* Animation for appearance */
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Add these styles to your existing CSS file */
+
+.delete-modal-content {
+  text-align: center;
+  max-width: 350px;
+}
+
+.delete-modal-content h2 {
+  color: #e74c3c;
+  margin-bottom: 15px;
+}
+
+.delete-modal-content p {
+  color: #555;
+  margin-bottom: 25px;
+  font-size: 18px;
+}
+
+.delete-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #7f8c8d;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Animation for the delete modal */
+@keyframes deleteModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.delete-modal-content {
+  animation: deleteModalFadeIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .todo_box {
+    max-width: 80%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .todo {
+    align-items: center;
+  }
+
+  .todo_box {
+    max-width: 100%;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .todo_top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .todo_top h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .todo_top_right {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .todo_top_right input,
+  .todo_top_right button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .todo-item {
+    padding: 12px;
+  }
+
+  .todo-item_left label p {
+    width: calc(100% - 40px);
+    font-size: 16px;
+  }
+
+  .todo-item_right {
+    margin-top: 10px;
+  }
+
+  .todo-item_right button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .modal-content {
+    width: 90%;
+    max-width: none;
+    padding: 20px;
+    margin: 10% auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .todo_box {
+    padding: 10px;
+  }
+
+  .todo_top h1 {
+    font-size: 20px;
+  }
+
+  .todo-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .todo-item_left {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .todo-item_right {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .todo-item_right button {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .modal-content {
+    padding: 15px;
+  }
+
+  .modal-content h2 {
+    font-size: 18px;
+  }
+
+  #edit-input,
+  #save-edit {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .delete-modal-content {
+    max-width: 95%;
+  }
+
+  .delete-modal-content p {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .todo_top h1 {
+    font-size: 18px;
+  }
+
+  .todo_top_right input,
+  .todo_top_right button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .todo-item_left input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .todo-item_left label p {
+    font-size: 14px;
+  }
+
+  .todo-item_right button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .modal-content h2 {
+    font-size: 16px;
+  }
+
+  #edit-input,
+  #save-edit,
+  .btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+/* Improve touch targets for mobile */
+@media (hover: none) and (pointer: coarse) {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Poppins;
+  width: 100%;
+  height: 100%;
+  background-color: #e2e8f0;
+  /* background-color: #fff; */
+  color: #000;
+}
+/* Make modern scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background-color: #e2e8f0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #7455ff;
+}
+.todo {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo_box {
+  width: 100%;
+  max-width: 500px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 0px 20px;
+}
+
+.todo_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 99;
+}
+
+.todo_top h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.todo_top_right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo_top_right input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.3s ease-in-out;
+}
+.todo_top_right input::placeholder {
+  color: #94a3b8;
+}
+.todo_top_right input:focus {
+  border: 1px solid #000;
+}
+
+.todo_top_right button {
+  padding: 10px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+.todo_top_right button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.todos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  overflow-y: auto;
+}
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+
+.todo-item:hover {
+  background-color: #f1f1f1;
+}
+
+.todo-item_left {
+  display: flex;
+  align-items: center;
+}
+
+.todo-item_left input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+}
+
+.todo-item_left input[type="checkbox"]:checked {
+  background-color: #7455ff;
+  border-color: #7455ff;
+}
+
+.todo-item_left input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.todo-item_left label p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  /* Make when text overflow, will be hidden and show by ... */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  width: 240px;
+  transition: all .5 cubic-bezier(0.19, 1, 0.22, 1);
+  transform-origin: left center;
+}
+.todo-item.checked .todo-item_left p {
+  text-decoration: line-through;
+  color: #888; /* Optional: To make the completed todo text gray */
+}
+
+
+.todo-item_right {
+  display: flex;
+  gap: 10px;
+}
+
+.todo-item_right button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.todo-item_right button:hover {
+  background-color: #0056b3;
+}
+
+.todo-item_right button:active {
+  background-color: #004494;
+  transform: scale(1);
+}
+/* Modal Styles */
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: 15% auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #555;
+}
+
+.modal-content h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+#edit-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+#edit-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+#save-edit {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+#save-edit:hover {
+  background-color: #3a7bc8;
+}
+
+#save-edit:active {
+  transform: scale(0.98);
+}
+/* Error Message Styles */
+.animated-error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffcc00;
+  color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  display: none; /* Hidden by default */
+  animation: slideIn 0.5s forwards; /* Animation for appearance */
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Add these styles to your existing CSS file */
+
+.delete-modal-content {
+  text-align: center;
+  max-width: 350px;
+}
+
+.delete-modal-content h2 {
+  color: #e74c3c;
+  margin-bottom: 15px;
+}
+
+.delete-modal-content p {
+  color: #555;
+  margin-bottom: 25px;
+  font-size: 18px;
+}
+
+.delete-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #7f8c8d;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Animation for the delete modal */
+@keyframes deleteModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.delete-modal-content {
+  animation: deleteModalFadeIn 0.3s ease-out;
+}
+
+
+
+
+}
+
+@media screen and (max-width: 480px) {
+  .todo {
+    padding-top: 0;
+  }
+
+  .todo_box {
+    padding: 10px;
+    max-height: none;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+}
